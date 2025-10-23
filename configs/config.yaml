@@ -1,0 +1,2 @@
+server_address: 0.0.0.0:8080
+postgres_dsn: temp
