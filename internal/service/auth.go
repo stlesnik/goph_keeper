@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/stlesnik/goph_keeper/internal/config"
 	"github.com/stlesnik/goph_keeper/internal/models"
 	"github.com/stlesnik/goph_keeper/internal/store"
@@ -36,7 +37,7 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 	if err != nil {
 		return "", err
 	}
-	token, err := util.GenerateJWT(regUser.Username, regUser.Email, svc.cfg.JWTSecret)
+	token, err := util.GenerateJWT("", regUser.Username, regUser.Email, svc.cfg.JWTSecret)
 	if err != nil {
 		return "", err
 	}
@@ -53,7 +54,7 @@ func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUserReq
 	if err != nil {
 		return "", err
 	}
-	token, err := util.GenerateJWT(user.Username, user.Email, svc.cfg.JWTSecret)
+	token, err := util.GenerateJWT(user.ID, user.Username, user.Email, svc.cfg.JWTSecret)
 	if err != nil {
 		return "", err
 	}

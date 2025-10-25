@@ -74,3 +74,14 @@ type VersionResponse struct {
 	Build   string `json:"build"`
 	Date    string `json:"date"`
 }
+
+// DataItemResponse represents a data item response for API
+type DataItemResponse struct {
+	ID        string `json:"id"`
+	Type      string `json:"type"`
+	Title     string `json:"title"`
+	Data      string `json:"data"`
+	Metadata  string `json:"metadata"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
+}

@@ -13,16 +13,18 @@ const TokenExp = time.Hour * 24
 // Claims is JWT claims with user ID.
 type Claims struct {
 	jwt.RegisteredClaims
+	UserID   string `json:"user_id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
 
 // GenerateJWT creates a signed JWT for the given user.
-func GenerateJWT(username, email string, secretKey string) (string, error) {
+func GenerateJWT(userID, username, email string, secretKey string) (string, error) {
 	claims := &Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExp)),
 		},
+		UserID:   userID,
 		Username: username,
 		Email:    email,
 	}
