@@ -21,8 +21,10 @@ func NewRouter(cfg *config.Config, store *store.Store) *chi.Mux {
 		return middleware.WithAuth(cfg, wrap(h))
 	}
 
-	r.Post("api/register", wrap(hs.RegisterUser))
-	r.Post("api/login", wrap(hs.LoginUser))
+	r.Route("/user", func(r chi.Router) {
+		r.Post("/register", wrap(hs.RegisterUser))
+		r.Post("/login", wrap(hs.LoginUser))
+	})
 
 	r.Get("/ping", wrap(hs.Ping))
 

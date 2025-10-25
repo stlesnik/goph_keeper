@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"github.com/spf13/viper"
 )
 
@@ -28,5 +29,22 @@ func Load() (Config, error) {
 	if err != nil {
 		return Config{}, err
 	}
+	err = config.Validate()
+	if err != nil {
+		return Config{}, err
+	}
 	return config, nil
+}
+
+func (c *Config) Validate() error {
+	if c.PostgresDSN == "" {
+		return errors.New("postgres DSN is required")
+	}
+	if c.JWTSecret == "" {
+		return errors.New("JWT secret is required")
+	}
+	if len(c.JWTSecret) < 32 {
+		return errors.New("JWT secret must be at least 32 characters")
+	}
+	return nil
 }

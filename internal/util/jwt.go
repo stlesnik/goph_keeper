@@ -36,8 +36,8 @@ func GenerateJWT(username, email string, secretKey string) (string, error) {
 	return tokenString, nil
 }
 
-// ValidateToken takes user's token from the HTTP headers and validate it.
-func ValidateToken(signedToken string, secretKey string) (err error) {
+// ParseToken takes user's token from the HTTP headers, validates it and returns claims.
+func ParseToken(signedToken string, secretKey string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&Claims{},
@@ -46,16 +46,16 @@ func ValidateToken(signedToken string, secretKey string) (err error) {
 		},
 	)
 	if err != nil {
-		return
+		return nil, err
 	}
 	claims, ok := token.Claims.(*Claims)
 	if !ok {
 		err = errors.New("couldn't parse claims")
-		return
+		return nil, err
 	}
 	if claims.ExpiresAt.Unix() < time.Now().Local().Unix() {
 		err = errors.New("token expired")
-		return
+		return nil, err
 	}
-	return
+	return claims, nil
 }

@@ -11,7 +11,7 @@ import (
 // AuthService is a structure representing authentication service
 type AuthService struct {
 	cfg  *config.Config
-	repo *store.UsersRepository
+	repo store.UsersRepositoryInterface
 }
 
 // NewAuthService creates new authentication service
@@ -45,15 +45,11 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 
 // Login confirms that user is registered and generates authorization token
 func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUser) (string, error) {
-	hashedPassword, err := util.HashPassword(loginUser.Password)
-	if err != nil {
-		return "", err
-	}
 	user, err := svc.repo.GetByEmail(ctx, loginUser.Email)
 	if err != nil {
 		return "", err
 	}
-	err = util.CheckPassword(loginUser.Password, hashedPassword)
+	err = util.CheckPassword(loginUser.Password, user.PasswordHash)
 	if err != nil {
 		return "", err
 	}

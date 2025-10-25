@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"github.com/stlesnik/goph_keeper/internal/config"
 	"github.com/stlesnik/goph_keeper/internal/util"
 	"net/http"
@@ -14,11 +15,12 @@ func WithAuth(cfg *config.Config, next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "request does not contain an access token", http.StatusUnauthorized)
 			return
 		}
-		err := util.ValidateToken(tokenString, cfg.JWTSecret)
+		claims, err := util.ParseToken(tokenString, cfg.JWTSecret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		next(w, r)
+		ctx := context.WithValue(r.Context(), "user", claims)
+		next(w, r.WithContext(ctx))
 	}
 }

@@ -6,6 +6,12 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// UsersRepositoryInterface is an interface for structure UsersRepository for mocks
+type UsersRepositoryInterface interface {
+	Save(ctx context.Context, username, email, hashedPassword string) error
+	GetByEmail(ctx context.Context, email string) (User, error)
+}
+
 // UsersRepository is a structure with database connection
 type UsersRepository struct {
 	db *sqlx.DB
