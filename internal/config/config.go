@@ -9,6 +9,7 @@ type Config struct {
 	ServerAddress string `mapstructure:"server_address"`
 	PostgresDSN   string `mapstructure:"postgres_dsn"`
 	Environment   string `mapstructure:"environment"`
+	JWTSecret     string `mapstructure:"jwt_secret"`
 }
 
 // Load creates a new Config by parsing configuration file, environment variables, and flags.

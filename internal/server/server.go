@@ -18,7 +18,7 @@ type Server struct {
 
 // NewServer creates a new Server instance with given storage and config
 func NewServer(cfg *config.Config, store *store.Store) (*Server, error) {
-	r := NewRouter(store)
+	r := NewRouter(cfg, store)
 	s := &http.Server{
 		Addr:    cfg.ServerAddress,
 		Handler: r,
