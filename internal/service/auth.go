@@ -23,7 +23,7 @@ func NewAuthService(cfg *config.Config, repo *store.UsersRepository) *AuthServic
 }
 
 // Register validates registration request and creates db entity and authorization token
-func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUser) (string, error) {
+func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUserRequest) (string, error) {
 	err := util.ValidatePassword(regUser.Password)
 	if err != nil {
 		return "", err
@@ -44,7 +44,7 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 }
 
 // Login confirms that user is registered and generates authorization token
-func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUser) (string, error) {
+func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUserRequest) (string, error) {
 	user, err := svc.repo.GetByEmail(ctx, loginUser.Email)
 	if err != nil {
 		return "", err

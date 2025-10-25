@@ -8,7 +8,7 @@ import (
 // Store represents structure of storage.
 type Store struct {
 	Users *UsersRepository
-	Items *ItemsRepository
+	Data  *DataRepository
 }
 
 // NewStore creates new Store instance with config
@@ -22,9 +22,9 @@ func NewStore(cfg config.Config) (*Store, error) {
 		return nil, err
 	}
 	users := NewUsersRepository(db)
-	items := NewItemsRepository(db)
+	items := NewDataRepository(db)
 	return &Store{
 		Users: users,
-		Items: items,
+		Data:  items,
 	}, nil
 }

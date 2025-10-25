@@ -3,14 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/stlesnik/goph_keeper/internal/logger"
 	"github.com/stlesnik/goph_keeper/internal/models"
-	"net/http"
 )
 
 // RegisterUser handles user's initial registration.
 func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
-	var regUser models.RegisterUser
+	var regUser models.RegisterUserRequest
 	err := json.NewDecoder(r.Body).Decode(&regUser)
 	if err != nil {
 		logger.Logger.Error("Error decoding registration request: %w", err)
@@ -40,7 +41,7 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 
 // LoginUser handles user's log in.
 func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
-	var logUser models.LoginUser
+	var logUser models.LoginUserRequest
 	err := json.NewDecoder(r.Body).Decode(&logUser)
 	if err != nil {
 		logger.Logger.Error("Error decoding login request: %w", err)

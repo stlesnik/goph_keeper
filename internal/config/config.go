@@ -11,6 +11,9 @@ type Config struct {
 	PostgresDSN   string `mapstructure:"postgres_dsn"`
 	Environment   string `mapstructure:"environment"`
 	JWTSecret     string `mapstructure:"jwt_secret"`
+	TLSCertFile   string `mapstructure:"tls_cert_file"`
+	TLSKeyFile    string `mapstructure:"tls_key_file"`
+	EnableHTTPS   bool   `mapstructure:"enable_https"`
 }
 
 // Load creates a new Config by parsing configuration file, environment variables, and flags.

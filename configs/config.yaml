@@ -1,2 +1,5 @@
 server_address: 0.0.0.0:8080
 postgres_dsn: temp
+enable_https: true
+tls_cert_file: "configs/certs/server.crt"
+tls_key_file: "configs/certs/server.key"
