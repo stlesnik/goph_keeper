@@ -8,7 +8,7 @@ import (
 
 // UsersRepositoryInterface is an interface for structure UsersRepository for mocks
 type UsersRepositoryInterface interface {
-	Save(ctx context.Context, username, email, hashedPassword string) error
+	Save(ctx context.Context, item *User) error
 	GetByEmail(ctx context.Context, email string) (User, error)
 	Ping(ctx context.Context) error
 }
@@ -24,10 +24,11 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 }
 
 // Save creates user in db
-func (r *UsersRepository) Save(ctx context.Context, username, email, hashedPassword string) error {
+func (r *UsersRepository) Save(ctx context.Context, item *User) error {
 	_, err := r.db.ExecContext(ctx, `
-		INSERT INTO users (username, email, hashed_password) VALUES ($1, $2, $3)
-	`, username, email, hashedPassword)
+		INSERT INTO users (id, username, email, hashed_password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)
+		`, item.ID, item.Username, item.Email,
+		item.PasswordHash, item.CreatedAt, item.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("error inserting user: %w", err)
 	}

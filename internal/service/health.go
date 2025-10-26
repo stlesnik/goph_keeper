@@ -27,7 +27,7 @@ func (svc *HealthService) Check(ctx context.Context) bool {
 		logger.Logger.Error("Data Repository health check failed", zap.Error(err))
 		return false
 	}
-	err := svc.UsersRepo.Ping(ctx)
+	err = svc.UsersRepo.Ping(ctx)
 	if err != nil {
 		logger.Logger.Error("Users Repository health check failed", zap.Error(err))
 		return false

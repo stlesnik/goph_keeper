@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"github.com/google/uuid"
+	"time"
 
 	"github.com/stlesnik/goph_keeper/internal/config"
 	"github.com/stlesnik/goph_keeper/internal/models"
@@ -33,7 +35,18 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 	if err != nil {
 		return "", err
 	}
-	err = svc.repo.Save(ctx, regUser.Username, regUser.Email, hashedPassword)
+
+	now := time.Now()
+	item := &store.User{
+		ID:           uuid.New().String(),
+		Username:     regUser.Username,
+		Email:        regUser.Email,
+		PasswordHash: hashedPassword,
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
+
+	err = svc.repo.Save(ctx, item)
 	if err != nil {
 		return "", err
 	}

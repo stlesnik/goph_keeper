@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/stlesnik/goph_keeper/internal/middleware"
 	"github.com/stlesnik/goph_keeper/internal/models"
 	"github.com/stlesnik/goph_keeper/internal/store"
 	"github.com/stlesnik/goph_keeper/internal/util"
@@ -21,7 +22,7 @@ func NewUserService(repo *store.UsersRepository) *UserService {
 
 // ChangePassword validates password and updates it
 func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.ChangePasswordRequest) error {
-	userClaims := ctx.Value("user").(*util.Claims)
+	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
 	user, err := svc.repo.GetByEmail(ctx, userClaims.Email)
 	if err != nil {
 		return err
@@ -34,11 +35,11 @@ func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.Cha
 	if err != nil {
 		return err
 	}
-	hashedPassword, err := util.HashPassword(changeReq.NewPassword)
+	user.PasswordHash, err = util.HashPassword(changeReq.NewPassword)
 	if err != nil {
 		return err
 	}
-	err = svc.repo.Save(ctx, user.Username, user.Email, hashedPassword)
+	err = svc.repo.Save(ctx, &user)
 	if err != nil {
 		return err
 	}
@@ -47,7 +48,7 @@ func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.Cha
 
 // GetProfile gather user's profile info
 func (svc *UserService) GetProfile(ctx context.Context) (models.UserProfile, error) {
-	userClaims := ctx.Value("user").(*util.Claims)
+	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
 	user, err := svc.repo.GetByEmail(ctx, userClaims.Email)
 	if err != nil {
 		return models.UserProfile{}, err

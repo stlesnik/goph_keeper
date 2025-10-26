@@ -29,7 +29,7 @@ func NewRouter(cfg *config.Config, store *store.Store) *chi.Mux {
 		r.Get("/profile", authWrap(hs.GetUserProfile))
 	})
 
-	r.Route("/api/data", func(r chi.Router) {
+	r.Route("/data", func(r chi.Router) {
 		r.Post("/", authWrap(hs.CreateData))
 		r.Get("/", authWrap(hs.GetAllData))
 

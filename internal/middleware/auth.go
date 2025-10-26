@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+type contextKey string
+
+const UserContextKey = contextKey("user")
+
 // WithAuth is a middleware that checks if the user is authenticated.
 func WithAuth(cfg *config.Config, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +24,7 @@ func WithAuth(cfg *config.Config, next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		ctx := context.WithValue(r.Context(), "user", claims)
+		ctx := context.WithValue(r.Context(), UserContextKey, claims)
 		next(w, r.WithContext(ctx))
 	}
 }

@@ -4,29 +4,23 @@ import "time"
 
 // User is a struct that repeats db entity
 type User struct {
-	ID           string
-	Username     string
-	Email        string
-	PasswordHash string
-	CreatedAt    time.Time
-}
-
-// Response is a struct for HTTP response
-type Response struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   string      `json:"error,omitempty"`
+	ID           string    `db:"id"`
+	Username     string    `db:"username"`
+	Email        string    `db:"email"`
+	PasswordHash string    `db:"password_hash"`
+	CreatedAt    time.Time `db:"created_at"`
+	UpdatedAt    time.Time `db:"updated_at"`
 }
 
 // EncryptedDataItem represents an encrypted data item stored by user
 type EncryptedDataItem struct {
-	ID            string
-	UserID        string
-	Type          string
-	Title         string
-	EncryptedData string
-	IV            string
-	Metadata      string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	ID            string    `db:"id"`
+	UserID        string    `db:"user_id"`
+	Type          string    `db:"type"`
+	Title         string    `db:"title"`
+	EncryptedData string    `db:"encrypted_data"`
+	IV            string    `db:"iv"`
+	Metadata      string    `db:"metadata"`
+	CreatedAt     time.Time `db:"created_at"`
+	UpdatedAt     time.Time `db:"updated_at"`
 }

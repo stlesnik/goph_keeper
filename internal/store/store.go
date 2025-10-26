@@ -3,6 +3,7 @@ package store
 import (
 	"github.com/jmoiron/sqlx"
 	"github.com/stlesnik/goph_keeper/internal/config"
+	"github.com/stlesnik/goph_keeper/internal/migrations"
 )
 
 // Store represents structure of storage.
@@ -21,6 +22,9 @@ func NewStore(cfg config.Config) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	migrations.Run(cfg.PostgresDSN)
+
 	users := NewUsersRepository(db)
 	items := NewDataRepository(db)
 	return &Store{
