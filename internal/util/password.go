@@ -46,8 +46,8 @@ func HashPassword(password string) (string, error) {
 }
 
 // CheckPassword checks if provided password matches the user's one
-func CheckPassword(password string, providedPassword string) error {
-	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(providedPassword))
+func CheckPassword(givenPassword string, passwordHash string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(givenPassword))
 	if err != nil {
 		return err
 	}

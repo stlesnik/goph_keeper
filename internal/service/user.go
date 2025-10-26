@@ -22,8 +22,8 @@ func NewUserService(repo *store.UsersRepository) *UserService {
 
 // ChangePassword validates password and updates it
 func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.ChangePasswordRequest) error {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	user, err := svc.repo.GetByEmail(ctx, userClaims.Email)
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	user, err := svc.repo.GetByEmail(ctx, userContext.Email)
 	if err != nil {
 		return err
 	}
@@ -48,8 +48,8 @@ func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.Cha
 
 // GetProfile gather user's profile info
 func (svc *UserService) GetProfile(ctx context.Context) (models.UserProfile, error) {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	user, err := svc.repo.GetByEmail(ctx, userClaims.Email)
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	user, err := svc.repo.GetByEmail(ctx, userContext.Email)
 	if err != nil {
 		return models.UserProfile{}, err
 	}

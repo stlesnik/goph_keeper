@@ -50,7 +50,7 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 	if err != nil {
 		return "", err
 	}
-	token, err := util.GenerateJWT("", regUser.Username, regUser.Email, svc.cfg.JWTSecret)
+	token, err := util.GenerateJWT(item.ID, item.Username, item.Email, svc.cfg.JWTSecret)
 	if err != nil {
 		return "", err
 	}

@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 // RegisterUserRequest is a struct for user registration request
 type RegisterUserRequest struct {
 	Username string `json:"username"`
@@ -24,19 +22,6 @@ type DataItem struct {
 	Metadata  string `json:"metadata,omitempty"`
 	CreatedAt string `json:"created_at,omitempty"`
 	UpdatedAt string `json:"updated_at,omitempty"`
-}
-
-// EncryptedDataItem represents an encrypted data item stored by user
-type EncryptedDataItem struct {
-	ID            string
-	UserID        string
-	Type          string
-	Title         string
-	EncryptedData string
-	IV            string
-	Metadata      string
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
 }
 
 // CreateDataRequest is a struct for creating new data item

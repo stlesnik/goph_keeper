@@ -14,7 +14,7 @@ func (h *Handlers) CreateData(w http.ResponseWriter, r *http.Request) {
 	var createDataReq models.CreateDataRequest
 	err := json.NewDecoder(r.Body).Decode(&createDataReq)
 	if err != nil {
-		logger.Logger.Error("Error decoding create data request: %w", err)
+		logger.Logger.Errorw("Error decoding create data request: %w", err)
 		http.Error(w, "Got error while decoding create data request", http.StatusBadRequest)
 		return
 	}
@@ -96,7 +96,7 @@ func (h *Handlers) UpdateData(w http.ResponseWriter, r *http.Request) {
 	var updateReq models.UpdateDataRequest
 	err := json.NewDecoder(r.Body).Decode(&updateReq)
 	if err != nil {
-		logger.Logger.Error("Error decoding update data request: %w", err)
+		logger.Logger.Errorw("Error decoding update data request: %w", err)
 		http.Error(w, "Got error while decoding update data request", http.StatusBadRequest)
 		return
 	}

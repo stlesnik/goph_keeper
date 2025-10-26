@@ -27,14 +27,8 @@ func NewDataService(repo store.DataRepositoryInterface) *DataService {
 
 // Create creates a new data item
 func (svc *DataService) Create(ctx context.Context, req models.CreateDataRequest) error {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	userID := userClaims.UserID
-
-	userKey := svc.encrypt.DeriveUserKey(userClaims.Email, []byte(userClaims.Email))
-	encryptedData, iv, err := svc.encrypt.EncryptData(req.Data, userKey)
-	if err != nil {
-		return err
-	}
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	userID := userContext.UserID
 
 	now := time.Now()
 	item := &store.EncryptedDataItem{
@@ -42,14 +36,14 @@ func (svc *DataService) Create(ctx context.Context, req models.CreateDataRequest
 		UserID:        userID,
 		Type:          req.Type,
 		Title:         req.Title,
-		EncryptedData: encryptedData,
-		IV:            iv,
+		EncryptedData: req.Data,
+		IV:            "",
 		Metadata:      req.Metadata,
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
 
-	err = svc.repo.Save(ctx, item)
+	err := svc.repo.Save(ctx, item)
 	if err != nil {
 		return err
 	}
@@ -59,8 +53,8 @@ func (svc *DataService) Create(ctx context.Context, req models.CreateDataRequest
 
 // GetAll retrieves all data item's titles for the user
 func (svc *DataService) GetAll(ctx context.Context) ([]models.DataItemResponse, error) {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	userID := userClaims.UserID
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	userID := userContext.UserID
 
 	items, err := svc.repo.GetAllByUserID(ctx, userID)
 	if err != nil {
@@ -84,15 +78,15 @@ func (svc *DataService) GetAll(ctx context.Context) ([]models.DataItemResponse, 
 
 // GetByID retrieves a data item by ID
 func (svc *DataService) GetByID(ctx context.Context, id string) (models.DataItemResponse, error) {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	userID := userClaims.UserID
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	userID := userContext.UserID
 
 	item, err := svc.repo.GetByID(ctx, id, userID)
 	if err != nil {
 		return models.DataItemResponse{}, err
 	}
 
-	userKey := svc.encrypt.DeriveUserKey(userClaims.Email, []byte(userClaims.Email))
+	userKey := svc.encrypt.DeriveUserKey(userContext.Email, []byte(userContext.Email))
 	decryptedData, err := svc.encrypt.DecryptData(item.EncryptedData, item.IV, userKey)
 	if err != nil {
 		return models.DataItemResponse{}, err
@@ -111,15 +105,15 @@ func (svc *DataService) GetByID(ctx context.Context, id string) (models.DataItem
 
 // Update updates an existing data item
 func (svc *DataService) Update(ctx context.Context, id string, req models.UpdateDataRequest) error {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	userID := userClaims.UserID
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	userID := userContext.UserID
 
 	existingItem, err := svc.repo.GetByID(ctx, id, userID)
 	if err != nil {
 		return err
 	}
 
-	userKey := svc.encrypt.DeriveUserKey(userClaims.Email, []byte(userClaims.Email))
+	userKey := svc.encrypt.DeriveUserKey(userContext.Email, []byte(userContext.Email))
 	encryptedData, iv, err := svc.encrypt.EncryptData(req.Data, userKey)
 	if err != nil {
 		return err
@@ -141,8 +135,8 @@ func (svc *DataService) Update(ctx context.Context, id string, req models.Update
 
 // Delete removes a data item
 func (svc *DataService) Delete(ctx context.Context, id string) error {
-	userClaims := ctx.Value(middleware.UserContextKey).(*util.Claims)
-	userID := userClaims.UserID
+	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
+	userID := userContext.UserID
 
 	return svc.repo.Delete(ctx, id, userID)
 }

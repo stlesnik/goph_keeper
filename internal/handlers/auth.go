@@ -14,7 +14,7 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var regUser models.RegisterUserRequest
 	err := json.NewDecoder(r.Body).Decode(&regUser)
 	if err != nil {
-		logger.Logger.Error("Error decoding registration request: %w", err)
+		logger.Logger.Errorw("Error decoding registration request: %w", err)
 		http.Error(w, "Got error while decoding registration request", http.StatusBadRequest)
 		return
 	}
@@ -71,7 +71,7 @@ func (h *Handlers) Ping(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("pong"))
 	if err != nil {
-		logger.Logger.Error("Error writing response on ping: %w", err)
+		logger.Logger.Errorw("Error writing response on ping: %w", err)
 
 	}
 }

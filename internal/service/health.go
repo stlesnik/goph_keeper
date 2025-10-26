@@ -24,12 +24,12 @@ func NewHealthService(dataRepo store.DataRepositoryInterface, usersRepo store.Us
 func (svc *HealthService) Check(ctx context.Context) bool {
 	err := svc.DataRepo.Ping(ctx)
 	if err != nil {
-		logger.Logger.Error("Data Repository health check failed", zap.Error(err))
+		logger.Logger.Errorw("Data Repository health check failed", zap.Error(err))
 		return false
 	}
 	err = svc.UsersRepo.Ping(ctx)
 	if err != nil {
-		logger.Logger.Error("Users Repository health check failed", zap.Error(err))
+		logger.Logger.Errorw("Users Repository health check failed", zap.Error(err))
 		return false
 	}
 	return true

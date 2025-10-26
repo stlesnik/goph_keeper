@@ -26,7 +26,7 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 // Save creates user in db
 func (r *UsersRepository) Save(ctx context.Context, item *User) error {
 	_, err := r.db.ExecContext(ctx, `
-		INSERT INTO users (id, username, email, hashed_password, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO users (id, username, email, password_hash, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)
 		`, item.ID, item.Username, item.Email,
 		item.PasswordHash, item.CreatedAt, item.UpdatedAt)
 	if err != nil {

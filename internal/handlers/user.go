@@ -12,7 +12,7 @@ func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	var changeReq models.ChangePasswordRequest
 	err := json.NewDecoder(r.Body).Decode(&changeReq)
 	if err != nil {
-		logger.Logger.Error("Error decoding change password request: %w", err)
+		logger.Logger.Errorw("Error decoding change password request: %w", err)
 		http.Error(w, "Got error while decoding change password request", http.StatusBadRequest)
 		return
 	}

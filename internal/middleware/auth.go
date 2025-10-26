@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"github.com/stlesnik/goph_keeper/internal/config"
+	"github.com/stlesnik/goph_keeper/internal/models"
 	"github.com/stlesnik/goph_keeper/internal/util"
 	"net/http"
 )
@@ -24,7 +25,10 @@ func WithAuth(cfg *config.Config, next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		ctx := context.WithValue(r.Context(), UserContextKey, claims)
+		ctx := context.WithValue(r.Context(), UserContextKey, &models.UserContext{
+			UserID: claims.UserID,
+			Email:  claims.Email,
+		})
 		next(w, r.WithContext(ctx))
 	}
 }
