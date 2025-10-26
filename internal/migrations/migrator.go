@@ -10,7 +10,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-const migrationsDir = "./internal/store/migrations/versions"
+const migrationsDir = "./internal/migrations/versions"
 
 // Run applies database migrations using the provided DSN.
 func Run(dsn string) {

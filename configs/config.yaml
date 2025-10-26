@@ -1,5 +1,6 @@
 server_address: 0.0.0.0:8080
-postgres_dsn: temp
+postgres_dsn: "postgres://url:url@localhost:5432/goph_keeper?sslmode=disable"
 enable_https: true
+jwt_secret: "super_secret_that_is_really_very_secure"
 tls_cert_file: "configs/certs/server.crt"
 tls_key_file: "configs/certs/server.key"
