@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/stlesnik/goph_keeper/internal/middleware"
-	"time"
 
 	"github.com/stlesnik/goph_keeper/internal/models"
 	"github.com/stlesnik/goph_keeper/internal/store"
@@ -36,8 +37,8 @@ func (svc *DataService) Create(ctx context.Context, req models.CreateDataRequest
 		UserID:        userID,
 		Type:          req.Type,
 		Title:         req.Title,
-		EncryptedData: req.Data,
-		IV:            "",
+		EncryptedData: req.EncryptedData,
+		IV:            req.IV,
 		Metadata:      req.Metadata,
 		CreatedAt:     now,
 		UpdatedAt:     now,
@@ -86,18 +87,12 @@ func (svc *DataService) GetByID(ctx context.Context, id string) (models.DataItem
 		return models.DataItemResponse{}, err
 	}
 
-	userKey := svc.encrypt.DeriveUserKey(userContext.Email, []byte(userContext.Email))
-	decryptedData, err := svc.encrypt.DecryptData(item.EncryptedData, item.IV, userKey)
-	if err != nil {
-		return models.DataItemResponse{}, err
-	}
-
 	return models.DataItemResponse{
 		ID:        item.ID,
 		Type:      item.Type,
 		Title:     item.Title,
-		Data:      decryptedData,
-		Metadata:  item.Metadata,
+		Data:      item.EncryptedData,
+		Metadata:  item.IV,
 		CreatedAt: item.CreatedAt.Format(time.RFC3339),
 		UpdatedAt: item.UpdatedAt.Format(time.RFC3339),
 	}, nil
@@ -112,17 +107,10 @@ func (svc *DataService) Update(ctx context.Context, id string, req models.Update
 	if err != nil {
 		return err
 	}
-
-	userKey := svc.encrypt.DeriveUserKey(userContext.Email, []byte(userContext.Email))
-	encryptedData, iv, err := svc.encrypt.EncryptData(req.Data, userKey)
-	if err != nil {
-		return err
-	}
-
 	existingItem.Type = req.Type
 	existingItem.Title = req.Title
-	existingItem.EncryptedData = encryptedData
-	existingItem.IV = iv
+	existingItem.EncryptedData = req.EncryptedData
+	existingItem.IV = req.IV
 	existingItem.Metadata = req.Metadata
 	existingItem.UpdatedAt = time.Now()
 

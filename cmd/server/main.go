@@ -59,7 +59,7 @@ func main() {
 		logger.Logger.Infow("Получен сигнал завершения", "signal", sig)
 	case err := <-httpErrCh:
 		if err != nil {
-			logger.Logger.Fatal("Ошибка HTTP сервера", "error", err)
+			logger.Logger.Fatal("Ошибка HTTP сервера: ", "error", err)
 		}
 		return
 	}

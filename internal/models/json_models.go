@@ -26,18 +26,20 @@ type DataItem struct {
 
 // CreateDataRequest is a struct for creating new data item
 type CreateDataRequest struct {
-	Type     string `json:"type" validate:"required,oneof=password text binary card"`
-	Title    string `json:"title" validate:"required"`
-	Data     string `json:"data" validate:"required"`
-	Metadata string `json:"metadata,omitempty"`
+	Type          string `json:"type" validate:"required,oneof=password text binary card"`
+	Title         string `json:"title" validate:"required"`
+	EncryptedData string `json:"encrypted_data" validate:"required"`
+	IV            string `json:"iv" validate:"required"`
+	Metadata      string `json:"metadata,omitempty"`
 }
 
 // UpdateDataRequest is a struct for updating data item
 type UpdateDataRequest struct {
-	Type     string `json:"type" validate:"required,oneof=password text binary card"`
-	Title    string `json:"title" validate:"required"`
-	Data     string `json:"data" validate:"required"`
-	Metadata string `json:"metadata,omitempty"`
+	Type          string `json:"type" validate:"required,oneof=password text binary card"`
+	Title         string `json:"title" validate:"required"`
+	EncryptedData string `json:"encrypted_data" validate:"required"`
+	IV            string `json:"iv" validate:"required"`
+	Metadata      string `json:"metadata,omitempty"`
 }
 
 // ChangePasswordRequest is a struct for changing user password
