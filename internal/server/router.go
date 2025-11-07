@@ -11,7 +11,7 @@ import (
 )
 
 // NewRouter creates new chi router and configures it with handlers
-func NewRouter(cfg *config.Config, store *store.Store) *chi.Mux {
+func NewRouter(cfg *config.ServerConfig, store *store.Store) *chi.Mux {
 	r := chi.NewRouter()
 
 	hs := handlers.NewHandlers(cfg, store)

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/stlesnik/goph_keeper/internal/config"
 	"os"
 
 	"github.com/stlesnik/goph_keeper/internal/client"
@@ -27,9 +28,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	cfg := client.Config{
-		ServerURL: "https://localhost:8080",
-		CertFile:  "configs/certs/ca.crt",
+	cfg, err := config.LoadClientConfig()
+	if err != nil {
+		fmt.Printf("Error loading client config: %s\n", err)
+		os.Exit(1)
 	}
 
 	app := client.NewApp(cfg)

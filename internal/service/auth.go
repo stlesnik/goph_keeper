@@ -13,12 +13,12 @@ import (
 
 // AuthService is a structure representing authentication service
 type AuthService struct {
-	cfg  *config.Config
+	cfg  *config.ServerConfig
 	repo store.UsersRepositoryInterface
 }
 
 // NewAuthService creates new authentication service
-func NewAuthService(cfg *config.Config, repo *store.UsersRepository) *AuthService {
+func NewAuthService(cfg *config.ServerConfig, repo *store.UsersRepository) *AuthService {
 	return &AuthService{
 		cfg:  cfg,
 		repo: repo,

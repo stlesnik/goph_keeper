@@ -13,7 +13,7 @@ type Handlers struct {
 }
 
 // NewHandlers creates a new Handler with the provided service.
-func NewHandlers(cfg *config.Config, store *store.Store) *Handlers {
+func NewHandlers(cfg *config.ServerConfig, store *store.Store) *Handlers {
 	svc := service.NewService(cfg, store)
 	return &Handlers{
 		service: svc,

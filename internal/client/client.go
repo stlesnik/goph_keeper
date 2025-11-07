@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"github.com/stlesnik/goph_keeper/internal/config"
 	"io"
 	"log"
 	"net/http"
@@ -15,23 +16,16 @@ import (
 	"github.com/stlesnik/goph_keeper/internal/models"
 )
 
-// Config holds client configuration
-type Config struct {
-	ServerURL string
-	TokenFile string
-	CertFile  string
-}
-
 // Client represents the GophKeeper client
 type Client struct {
-	config     Config
+	config     config.ClientConfig
 	httpClient *http.Client
 	token      string
 	encryption *ClientEncryption
 }
 
 // NewClient creates a new client instance
-func NewClient(config Config) *Client {
+func NewClient(config config.ClientConfig) *Client {
 	caCert, err := os.ReadFile(config.CertFile)
 	if err != nil {
 		log.Fatal(err)
@@ -90,7 +84,12 @@ func (c *Client) Register(username, email, password string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusCreated {
 		body, _ := io.ReadAll(resp.Body)
@@ -117,7 +116,12 @@ func (c *Client) Login(email, password string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -139,7 +143,12 @@ func (c *Client) GetProfile() (*models.UserProfile, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -160,7 +169,12 @@ func (c *Client) GetAllData() ([]models.DataItemResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -181,7 +195,12 @@ func (c *Client) GetDataByID(id string) (*models.DataItemResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -227,7 +246,12 @@ func (c *Client) CreateData(dataType, title, data, metadata string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusCreated {
 		body, _ := io.ReadAll(resp.Body)
@@ -260,7 +284,12 @@ func (c *Client) UpdateData(id, dataType, title, data, metadata string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
@@ -276,7 +305,12 @@ func (c *Client) DeleteData(id string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusNoContent {
 		body, _ := io.ReadAll(resp.Body)
@@ -297,7 +331,12 @@ func (c *Client) ChangePassword(currentPassword, newPassword string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			_ = fmt.Errorf("unexpected error while closing body: %v", err)
+		}
+	}(resp.Body)
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)

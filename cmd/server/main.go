@@ -17,7 +17,7 @@ import (
 
 func main() {
 	// init config
-	cfg, err := config.Load()
+	cfg, err := config.LoadServerConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Logger.Infof("Config:%v", cfg)
+	logger.Logger.Infof("ServerConfig:%v", cfg)
 
 	st, err := store.NewStore(cfg)
 	if err != nil {

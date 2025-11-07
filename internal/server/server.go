@@ -13,14 +13,14 @@ import (
 
 // Server represents the HTTP server.
 type Server struct {
-	cfg    config.Config
+	cfg    config.ServerConfig
 	store  *store.Store
 	router *chi.Mux
 	http   *http.Server
 }
 
 // NewServer creates a new Server instance with given storage and config
-func NewServer(cfg *config.Config, store *store.Store) (*Server, error) {
+func NewServer(cfg *config.ServerConfig, store *store.Store) (*Server, error) {
 	r := NewRouter(cfg, store)
 
 	tlsConfig := &tls.Config{

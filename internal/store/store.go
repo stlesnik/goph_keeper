@@ -15,7 +15,7 @@ type Store struct {
 }
 
 // NewStore creates new Store instance with config
-func NewStore(cfg config.Config) (*Store, error) {
+func NewStore(cfg config.ServerConfig) (*Store, error) {
 	db, err := sqlx.Open("pgx", cfg.PostgresDSN)
 	if err != nil {
 		return nil, err

@@ -34,7 +34,7 @@ func (m *MockUsersRepository) Ping(ctx context.Context) error {
 
 func TestAuthService_Register(t *testing.T) {
 	mockRepo := new(MockUsersRepository)
-	cfg := &config.Config{
+	cfg := &config.ServerConfig{
 		JWTSecret: "test-secret-that-is-long-enough-for-validation",
 	}
 
@@ -60,7 +60,7 @@ func TestAuthService_Register(t *testing.T) {
 
 func TestAuthService_Login(t *testing.T) {
 	mockRepo := new(MockUsersRepository)
-	cfg := &config.Config{
+	cfg := &config.ServerConfig{
 		JWTSecret: "test-secret-that-is-long-enough-for-validation",
 	}
 
@@ -93,7 +93,7 @@ func TestAuthService_Login(t *testing.T) {
 
 func TestAuthService_Login_WrongPassword(t *testing.T) {
 	mockRepo := new(MockUsersRepository)
-	cfg := &config.Config{
+	cfg := &config.ServerConfig{
 		JWTSecret: "test-secret-that-is-long-enough-for-validation",
 	}
 

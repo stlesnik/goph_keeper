@@ -1,0 +1,2 @@
+server_url: https://localhost:8080
+cert_file: configs/certs/ca.crt

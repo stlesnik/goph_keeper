@@ -3,6 +3,7 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"github.com/stlesnik/goph_keeper/internal/config"
 	"golang.org/x/term"
 	"os"
 	"strings"
@@ -14,7 +15,7 @@ type App struct {
 }
 
 // NewApp creates a new CLI application
-func NewApp(config Config) *App {
+func NewApp(config config.ClientConfig) *App {
 	return &App{
 		client: NewClient(config),
 	}

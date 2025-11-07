@@ -14,7 +14,7 @@ type Service struct {
 }
 
 // NewService creates new Service
-func NewService(cfg *config.Config, store *store.Store) *Service {
+func NewService(cfg *config.ServerConfig, store *store.Store) *Service {
 	return &Service{
 		Auth:   NewAuthService(cfg, store.Users),
 		User:   NewUserService(store.Users),
