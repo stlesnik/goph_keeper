@@ -72,4 +72,8 @@ func main() {
 	if err := srv.Stop(shutdownCtx); err != nil {
 		logger.Logger.Fatal("Ошибка при остановке HTTP сервера", "error", err)
 	}
+
+	if err := st.Close(); err != nil {
+		logger.Logger.Fatal("Ошибка при разрыве связи с бд", "error", err)
+	}
 }

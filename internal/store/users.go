@@ -69,3 +69,7 @@ func (r *UsersRepository) GetByEmail(ctx context.Context, email string) (User, e
 func (r *UsersRepository) Ping(ctx context.Context) error {
 	return r.db.PingContext(ctx)
 }
+
+func (r *UsersRepository) Close() error {
+	return r.db.Close()
+}

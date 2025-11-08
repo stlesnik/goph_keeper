@@ -34,3 +34,15 @@ func NewStore(cfg config.ServerConfig) (*Store, error) {
 		Data:  items,
 	}, nil
 }
+
+func (s *Store) Close() error {
+	err := s.Data.Close()
+	if err != nil {
+		return err
+	}
+	err = s.Users.Close()
+	if err != nil {
+		return err
+	}
+	return nil
+}

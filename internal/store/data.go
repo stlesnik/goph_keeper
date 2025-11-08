@@ -2,7 +2,6 @@ package store
 
 import (
 	"context"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -96,4 +95,8 @@ func (r *DataRepository) Delete(ctx context.Context, id string, userID string) e
 // Ping returns table status
 func (r *DataRepository) Ping(ctx context.Context) error {
 	return r.db.PingContext(ctx)
+}
+
+func (r *DataRepository) Close() error {
+	return r.db.Close()
 }
