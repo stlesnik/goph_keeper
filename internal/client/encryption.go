@@ -16,9 +16,9 @@ type ClientEncryption struct {
 }
 
 // NewClientEncryption creates new client encryption instance
-func NewClientEncryption(password string) *ClientEncryption {
-	salt := []byte("goph_keeper_salt_2024")
-	userKey := pbkdf2.Key([]byte(password), salt, 100000, 32, sha256.New)
+func NewClientEncryption(password string, salt string) *ClientEncryption {
+	saltBytes, _ := base64.StdEncoding.DecodeString(salt)
+	userKey := pbkdf2.Key([]byte(password), saltBytes, 100000, 32, sha256.New)
 
 	return &ClientEncryption{
 		userKey: userKey,

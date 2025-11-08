@@ -75,13 +75,3 @@ func (es *EncryptionService) DecryptData(encryptedData string, iv string, userKe
 func (es *EncryptionService) DeriveUserKey(password string, salt []byte) []byte {
 	return pbkdf2.Key([]byte(password), salt, 100000, 32, sha256.New)
 }
-
-// GenerateSalt generates a random salt
-func (es *EncryptionService) GenerateSalt() ([]byte, error) {
-	salt := make([]byte, 32)
-	_, err := rand.Read(salt)
-	if err != nil {
-		return nil, err
-	}
-	return salt, nil
-}

@@ -9,6 +9,7 @@ import (
 // UsersRepositoryInterface is an interface for structure UsersRepository for mocks
 type UsersRepositoryInterface interface {
 	Save(ctx context.Context, item *User) error
+	Update(ctx context.Context, item *User) error
 	GetByEmail(ctx context.Context, email string) (User, error)
 	Ping(ctx context.Context) error
 }
@@ -26,11 +27,30 @@ func NewUsersRepository(db *sqlx.DB) *UsersRepository {
 // Save creates user in db
 func (r *UsersRepository) Save(ctx context.Context, item *User) error {
 	_, err := r.db.ExecContext(ctx, `
-		INSERT INTO users (id, username, email, password_hash, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)
+		INSERT INTO users (id, username, email, password_hash, salt, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)
 		`, item.ID, item.Username, item.Email,
-		item.PasswordHash, item.CreatedAt, item.UpdatedAt)
+		item.PasswordHash, item.Salt, item.CreatedAt, item.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("error inserting user: %w", err)
+	}
+	return nil
+}
+
+// Update updates user in db
+func (r *UsersRepository) Update(ctx context.Context, item *User) error {
+	_, err := r.db.ExecContext(ctx, `
+		UPDATE users 
+		SET username = $2,
+		    email = $3,
+		    password_hash = $4,
+		    salt = $5,
+		    created_at = $6,
+		    updated_at = $7
+		WHERE id = $1
+		`, item.ID, item.Username, item.Email,
+		item.PasswordHash, item.Salt, item.CreatedAt, item.UpdatedAt)
+	if err != nil {
+		return fmt.Errorf("error updating user: %w", err)
 	}
 	return nil
 }

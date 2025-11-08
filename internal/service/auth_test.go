@@ -22,6 +22,11 @@ func (m *MockUsersRepository) Save(ctx context.Context, item *store.User) error 
 	return args.Error(0)
 }
 
+func (m *MockUsersRepository) Update(ctx context.Context, item *store.User) error {
+	args := m.Called(ctx, item)
+	return args.Error(0)
+}
+
 func (m *MockUsersRepository) GetByEmail(ctx context.Context, email string) (store.User, error) {
 	args := m.Called(ctx, email)
 	return args.Get(0).(store.User), args.Error(1)
@@ -51,10 +56,11 @@ func TestAuthService_Register(t *testing.T) {
 
 	mockRepo.On("Save", mock.Anything, mock.AnythingOfType("*store.User")).Return(nil)
 
-	token, err := authService.Register(context.Background(), regUser)
+	token, salt, err := authService.Register(context.Background(), regUser)
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
+	assert.NotEmpty(t, salt)
 	mockRepo.AssertCalled(t, "Save", mock.Anything, mock.AnythingOfType("*store.User"))
 }
 
@@ -84,10 +90,11 @@ func TestAuthService_Login(t *testing.T) {
 
 	mockRepo.On("GetByEmail", mock.Anything, "test@example.com").Return(mockUser, nil)
 
-	token, err := authService.Login(context.Background(), loginUser)
+	token, salt, err := authService.Login(context.Background(), loginUser)
 
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
+	assert.NotEmpty(t, salt)
 	mockRepo.AssertCalled(t, "GetByEmail", mock.Anything, "test@example.com")
 }
 
@@ -117,8 +124,9 @@ func TestAuthService_Login_WrongPassword(t *testing.T) {
 
 	mockRepo.On("GetByEmail", mock.Anything, "test@example.com").Return(mockUser, nil)
 
-	token, err := authService.Login(context.Background(), loginUser)
+	token, salt, err := authService.Login(context.Background(), loginUser)
 
 	assert.Error(t, err)
 	assert.Empty(t, token)
+	assert.NotEmpty(t, salt)
 }

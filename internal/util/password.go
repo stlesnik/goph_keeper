@@ -1,6 +1,8 @@
 package util
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"strings"
@@ -52,4 +54,14 @@ func CheckPassword(givenPassword string, passwordHash string) error {
 		return err
 	}
 	return nil
+}
+
+// GenerateSalt generates a random salt
+func GenerateSalt() (string, error) {
+	salt := make([]byte, 32)
+	_, err := rand.Read(salt)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(salt), nil
 }

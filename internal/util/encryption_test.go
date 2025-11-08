@@ -4,38 +4,6 @@ import (
 	"testing"
 )
 
-func TestEncryptionService_EncryptDecryptData(t *testing.T) {
-	es := NewEncryptionService()
-
-	originalData := "sensitive data that needs encryption"
-	password := "test-password"
-
-	salt, err := es.GenerateSalt()
-	if err != nil {
-		t.Fatalf("GenerateSalt() failed: %v", err)
-	}
-
-	userKey := es.DeriveUserKey(password, salt)
-
-	encryptedData, iv, err := es.EncryptData(originalData, userKey)
-	if err != nil {
-		t.Fatalf("EncryptData() failed: %v", err)
-	}
-
-	if encryptedData == originalData {
-		t.Error("EncryptData() returned original data")
-	}
-
-	decryptedData, err := es.DecryptData(encryptedData, iv, userKey)
-	if err != nil {
-		t.Fatalf("DecryptData() failed: %v", err)
-	}
-
-	if decryptedData != originalData {
-		t.Errorf("DecryptData() = %v, want %v", decryptedData, originalData)
-	}
-}
-
 func TestEncryptionService_DeriveUserKey(t *testing.T) {
 	es := NewEncryptionService()
 

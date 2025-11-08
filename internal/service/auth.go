@@ -26,14 +26,20 @@ func NewAuthService(cfg *config.ServerConfig, repo *store.UsersRepository) *Auth
 }
 
 // Register validates registration request and creates db entity and authorization token
-func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUserRequest) (string, error) {
+func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUserRequest) (string, string, error) {
 	err := util.ValidatePassword(regUser.Password)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
+
+	salt, err := util.GenerateSalt()
+	if err != nil {
+		return "", "", err
+	}
+
 	hashedPassword, err := util.HashPassword(regUser.Password)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
 	now := time.Now()
@@ -42,34 +48,35 @@ func (svc *AuthService) Register(ctx context.Context, regUser models.RegisterUse
 		Username:     regUser.Username,
 		Email:        regUser.Email,
 		PasswordHash: hashedPassword,
+		Salt:         salt,
 		CreatedAt:    now,
 		UpdatedAt:    now,
 	}
 
 	err = svc.repo.Save(ctx, item)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	token, err := util.GenerateJWT(item.ID, item.Username, item.Email, svc.cfg.JWTSecret)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return token, nil
+	return token, salt, nil
 }
 
 // Login confirms that user is registered and generates authorization token
-func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUserRequest) (string, error) {
+func (svc *AuthService) Login(ctx context.Context, loginUser models.LoginUserRequest) (string, string, error) {
 	user, err := svc.repo.GetByEmail(ctx, loginUser.Email)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	err = util.CheckPassword(loginUser.Password, user.PasswordHash)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 	token, err := util.GenerateJWT(user.ID, user.Username, user.Email, svc.cfg.JWTSecret)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return token, nil
+	return token, user.Salt, nil
 }

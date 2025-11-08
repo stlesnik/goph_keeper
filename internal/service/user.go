@@ -39,7 +39,7 @@ func (svc *UserService) ChangePassword(ctx context.Context, changeReq models.Cha
 	if err != nil {
 		return err
 	}
-	err = svc.repo.Save(ctx, &user)
+	err = svc.repo.Update(ctx, &user)
 	if err != nil {
 		return err
 	}

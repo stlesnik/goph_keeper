@@ -19,7 +19,7 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.service.Auth.Register(r.Context(), regUser)
+	token, salt, err := h.service.Auth.Register(r.Context(), regUser)
 	if err != nil {
 		logger.Logger.Errorw("Registration error: %w", err,
 			"error", err.Error(),
@@ -36,6 +36,7 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		"ip", r.RemoteAddr,
 	)
 	w.Header().Set("Authorization", token)
+	w.Header().Set("X-User-Salt", salt)
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -49,7 +50,7 @@ func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	token, err := h.service.Auth.Login(r.Context(), logUser)
+	token, salt, err := h.service.Auth.Login(r.Context(), logUser)
 	if err != nil {
 		logger.Logger.Errorw("Login error: %w", err,
 			"error", err.Error(),
@@ -63,6 +64,7 @@ func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
 		"ip", r.RemoteAddr,
 	)
 	w.Header().Set("Authorization", token)
+	w.Header().Set("X-User-Salt", salt)
 	w.WriteHeader(http.StatusOK)
 }
 

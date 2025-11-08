@@ -97,9 +97,10 @@ func (c *Client) Register(username, email, password string) error {
 	}
 
 	token := resp.Header.Get("Authorization")
+	salt := resp.Header.Get("X-User-Salt")
 	if token != "" {
 		c.token = token
-		c.encryption = NewClientEncryption(password)
+		c.encryption = NewClientEncryption(password, salt)
 	}
 
 	return nil
@@ -129,9 +130,10 @@ func (c *Client) Login(email, password string) error {
 	}
 
 	token := resp.Header.Get("Authorization")
+	salt := resp.Header.Get("X-User-Salt")
 	if token != "" {
 		c.token = token
-		c.encryption = NewClientEncryption(password)
+		c.encryption = NewClientEncryption(password, salt)
 	}
 
 	return nil
