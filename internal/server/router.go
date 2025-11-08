@@ -15,34 +15,39 @@ func NewRouter(cfg *config.ServerConfig, store *store.Store) *chi.Mux {
 	r := chi.NewRouter()
 
 	hs := handlers.NewHandlers(cfg, store)
-	wrap := func(h http.HandlerFunc) http.HandlerFunc {
-		return middleware.WithLogging(h)
-	}
-	authWrap := func(h http.HandlerFunc) http.HandlerFunc {
-		return middleware.WithAuth(cfg, wrap(h))
-	}
 
-	r.Route("/user", func(r chi.Router) {
-		r.Post("/register", wrap(hs.RegisterUser))
-		r.Post("/login", wrap(hs.LoginUser))
-		r.Put("/password", authWrap(hs.ChangePassword))
-		r.Get("/profile", authWrap(hs.GetUserProfile))
+	r.Use(middleware.WithLogging)
+
+	r.Route("/auth", func(r chi.Router) {
+		r.Post("/register", hs.RegisterUser)
+		r.Post("/login", hs.LoginUser)
 	})
 
-	r.Route("/data", func(r chi.Router) {
-		r.Get("/{offset}", authWrap(hs.GetAllData))
+	r.Group(func(r chi.Router) {
+		r.Use(func(next http.Handler) http.Handler {
+			return middleware.WithAuth(cfg, next)
+		})
 
-		r.Route("/item", func(r chi.Router) {
-			r.Post("/", authWrap(hs.CreateData))
-			r.Get("/{id}", authWrap(hs.GetDataByID))
-			r.Put("/{id}", authWrap(hs.UpdateData))
-			r.Delete("/{id}", authWrap(hs.DeleteData))
+		r.Route("/user", func(r chi.Router) {
+			r.Put("/password", hs.ChangePassword)
+			r.Get("/profile", hs.GetUserProfile)
+		})
+
+		r.Route("/data", func(r chi.Router) {
+			r.Get("/{offset}", hs.GetAllData)
+
+			r.Route("/item", func(r chi.Router) {
+				r.Post("/", hs.CreateData)
+				r.Get("/{id}", hs.GetDataByID)
+				r.Put("/{id}", hs.UpdateData)
+				r.Delete("/{id}", hs.DeleteData)
+			})
 		})
 	})
 
-	r.Get("/ping", wrap(hs.Ping))
-	r.Get("/health", wrap(hs.Health))
-	r.Get("/version", wrap(hs.Version))
+	r.Get("/ping", hs.Ping)
+	r.Get("/health", hs.Health)
+	r.Get("/version", hs.Version)
 
 	return r
 }

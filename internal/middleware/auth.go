@@ -13,8 +13,8 @@ type contextKey string
 const UserContextKey = contextKey("user")
 
 // WithAuth is a middleware that checks if the user is authenticated.
-func WithAuth(cfg *config.ServerConfig, next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+func WithAuth(cfg *config.ServerConfig, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		tokenString := r.Header.Get("Authorization")
 		if tokenString == "" {
 			http.Error(w, "request does not contain an access token", http.StatusUnauthorized)
@@ -29,6 +29,6 @@ func WithAuth(cfg *config.ServerConfig, next http.HandlerFunc) http.HandlerFunc 
 			UserID: claims.UserID,
 			Email:  claims.Email,
 		})
-		next(w, r.WithContext(ctx))
-	}
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }

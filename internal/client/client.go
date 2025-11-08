@@ -81,7 +81,7 @@ func (c *Client) Register(username, email, password string) error {
 		Password: password,
 	}
 
-	resp, err := c.makeRequest("POST", "/user/register", req)
+	resp, err := c.makeRequest("POST", "/auth/register", req)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func (c *Client) Login(email, password string) error {
 		Password: password,
 	}
 
-	resp, err := c.makeRequest("POST", "/user/login", req)
+	resp, err := c.makeRequest("POST", "/auth/login", req)
 	if err != nil {
 		return err
 	}
