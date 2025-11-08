@@ -14,14 +14,14 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	var regUser models.RegisterUserRequest
 	err := json.NewDecoder(r.Body).Decode(&regUser)
 	if err != nil {
-		logger.Logger.Errorw("Error decoding registration request: %w", err)
+		logger.Logger.Errorw("Error decoding registration request", "error", err)
 		http.Error(w, "Got error while decoding registration request", http.StatusBadRequest)
 		return
 	}
 
 	token, salt, err := h.service.Auth.Register(r.Context(), regUser)
 	if err != nil {
-		logger.Logger.Errorw("Registration error: %w", err,
+		logger.Logger.Errorw("Registration error", "error", err,
 			"error", err.Error(),
 			"email", regUser.Email,
 			"ip", r.RemoteAddr,
@@ -52,7 +52,7 @@ func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	token, salt, err := h.service.Auth.Login(r.Context(), logUser)
 	if err != nil {
-		logger.Logger.Errorw("Login error: %w", err,
+		logger.Logger.Errorw("Login error", "error", err,
 			"error", err.Error(),
 			"email", logUser.Email,
 			"ip", r.RemoteAddr)
@@ -73,7 +73,7 @@ func (h *Handlers) Ping(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err := w.Write([]byte("pong"))
 	if err != nil {
-		logger.Logger.Errorw("Error writing response on ping: %w", err)
+		logger.Logger.Errorw("Error writing response on ping", "error", err)
 
 	}
 }

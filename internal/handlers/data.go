@@ -14,14 +14,14 @@ func (h *Handlers) CreateData(w http.ResponseWriter, r *http.Request) {
 	var createDataReq models.CreateDataRequest
 	err := json.NewDecoder(r.Body).Decode(&createDataReq)
 	if err != nil {
-		logger.Logger.Errorw("Error decoding create data request: %w", err)
+		logger.Logger.Errorw("Error decoding create data request", "error", err)
 		http.Error(w, "Got error while decoding create data request", http.StatusBadRequest)
 		return
 	}
 
 	err = h.service.Data.Create(r.Context(), createDataReq)
 	if err != nil {
-		logger.Logger.Errorw("Create data error: %w", err,
+		logger.Logger.Errorw("Create data error", "error", err,
 			"error", err.Error(),
 			"ip", r.RemoteAddr,
 		)
@@ -41,7 +41,7 @@ func (h *Handlers) CreateData(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetAllData(w http.ResponseWriter, r *http.Request) {
 	dataItems, err := h.service.Data.GetAll(r.Context())
 	if err != nil {
-		logger.Logger.Errorw("Get data error: %w", err,
+		logger.Logger.Errorw("Get data error",
 			"error", err.Error(),
 			"ip", r.RemoteAddr,
 		)
@@ -56,7 +56,7 @@ func (h *Handlers) GetAllData(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(dataItems)
 	if err != nil {
-		logger.Logger.Errorw("Error writing response: %w", err)
+		logger.Logger.Errorw("Error writing response", "error", err)
 		http.Error(w, "Unable to get data items", http.StatusBadRequest)
 		return
 	}
@@ -68,7 +68,7 @@ func (h *Handlers) GetDataByID(w http.ResponseWriter, r *http.Request) {
 
 	dataItem, err := h.service.Data.GetByID(r.Context(), dataID)
 	if err != nil {
-		logger.Logger.Errorw("Get data by ID error: %w", err,
+		logger.Logger.Errorw("Get data by ID error", "error", err,
 			"error", err.Error(),
 			"data_id", dataID,
 			"ip", r.RemoteAddr,
@@ -85,7 +85,7 @@ func (h *Handlers) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(dataItem)
 	if err != nil {
-		logger.Logger.Errorw("Error writing response: %w", err)
+		logger.Logger.Errorw("Error writing response", "error", err)
 		http.Error(w, "Unable to get data item", http.StatusBadRequest)
 		return
 	}
@@ -98,14 +98,14 @@ func (h *Handlers) UpdateData(w http.ResponseWriter, r *http.Request) {
 	var updateReq models.UpdateDataRequest
 	err := json.NewDecoder(r.Body).Decode(&updateReq)
 	if err != nil {
-		logger.Logger.Errorw("Error decoding update data request: %w", err)
+		logger.Logger.Errorw("Error decoding update data request", "error", err)
 		http.Error(w, "Got error while decoding update data request", http.StatusBadRequest)
 		return
 	}
 
 	err = h.service.Data.Update(r.Context(), dataID, updateReq)
 	if err != nil {
-		logger.Logger.Errorw("Update data error: %w", err,
+		logger.Logger.Errorw("Update data error", "error", err,
 			"error", err.Error(),
 			"data_id", dataID,
 			"ip", r.RemoteAddr,
@@ -129,7 +129,7 @@ func (h *Handlers) DeleteData(w http.ResponseWriter, r *http.Request) {
 
 	err := h.service.Data.Delete(r.Context(), dataID)
 	if err != nil {
-		logger.Logger.Errorw("Delete data error: %w", err,
+		logger.Logger.Errorw("Delete data error", "error", err,
 			"error", err.Error(),
 			"data_id", dataID,
 			"ip", r.RemoteAddr,

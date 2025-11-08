@@ -12,14 +12,14 @@ func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	var changeReq models.ChangePasswordRequest
 	err := json.NewDecoder(r.Body).Decode(&changeReq)
 	if err != nil {
-		logger.Logger.Errorw("Error decoding change password request: %w", err)
+		logger.Logger.Errorw("Error decoding change password request", "error", err)
 		http.Error(w, "Got error while decoding change password request", http.StatusBadRequest)
 		return
 	}
 
 	err = h.service.User.ChangePassword(r.Context(), changeReq)
 	if err != nil {
-		logger.Logger.Errorw("Change password error: %w", err,
+		logger.Logger.Errorw("Change password error", "error", err,
 			"error", err.Error(),
 			"ip", r.RemoteAddr,
 		)
@@ -37,7 +37,7 @@ func (h *Handlers) ChangePassword(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	profile, err := h.service.User.GetProfile(r.Context())
 	if err != nil {
-		logger.Logger.Errorw("Get user profile error: %w", err,
+		logger.Logger.Errorw("Get user profile error", "error", err,
 			"error", err.Error(),
 			"ip", r.RemoteAddr,
 		)
@@ -52,7 +52,7 @@ func (h *Handlers) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(profile)
 	if err != nil {
-		logger.Logger.Errorw("JSON encoding error: %w", err)
+		logger.Logger.Errorw("JSON encoding error", "error", err)
 		http.Error(w, "Unable to get user profile", http.StatusBadRequest)
 		return
 	}
