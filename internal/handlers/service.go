@@ -24,6 +24,7 @@ func (h *Handlers) Health(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Errorw("Error encoding health status", "error", err)
 		http.Error(w, "Error encoding health status", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -45,5 +46,6 @@ func (h *Handlers) Version(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Errorw("Error encoding version", "error", err)
 		http.Error(w, "Error encoding version", http.StatusInternalServerError)
+		return
 	}
 }

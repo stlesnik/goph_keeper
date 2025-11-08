@@ -28,7 +28,7 @@ func (h *Handlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		)
 		errorMessage := fmt.Sprintf("Unable to register user: %s", err.Error())
 		http.Error(w, errorMessage, http.StatusBadRequest)
-
+		return
 	}
 	logger.Logger.Infow("Registration success: %s",
 		"email", regUser.Email,
@@ -47,7 +47,7 @@ func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Error("Error decoding login request: %w", err)
 		http.Error(w, "Got error while decoding login request", http.StatusBadRequest)
-
+		return
 	}
 
 	token, salt, err := h.service.Auth.Login(r.Context(), logUser)
@@ -57,7 +57,7 @@ func (h *Handlers) LoginUser(w http.ResponseWriter, r *http.Request) {
 			"email", logUser.Email,
 			"ip", r.RemoteAddr)
 		http.Error(w, "Unable to login", http.StatusBadRequest)
-
+		return
 	}
 	logger.Logger.Infow("Login success: %s",
 		"email", logUser.Email,

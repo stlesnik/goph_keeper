@@ -54,5 +54,6 @@ func (h *Handlers) GetUserProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Errorw("JSON encoding error: %w", err)
 		http.Error(w, "Unable to get user profile", http.StatusBadRequest)
+		return
 	}
 }

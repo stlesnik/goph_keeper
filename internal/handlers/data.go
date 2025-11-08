@@ -58,6 +58,7 @@ func (h *Handlers) GetAllData(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Errorw("Error writing response: %w", err)
 		http.Error(w, "Unable to get data items", http.StatusBadRequest)
+		return
 	}
 }
 
@@ -86,6 +87,7 @@ func (h *Handlers) GetDataByID(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Logger.Errorw("Error writing response: %w", err)
 		http.Error(w, "Unable to get data item", http.StatusBadRequest)
+		return
 	}
 }
 
