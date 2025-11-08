@@ -29,7 +29,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	logger.Logger.Infof("ServerConfig:%v", cfg)
 
 	st, err := store.NewStore(cfg)
 	if err != nil {
