@@ -30,12 +30,14 @@ func NewRouter(cfg *config.ServerConfig, store *store.Store) *chi.Mux {
 	})
 
 	r.Route("/data", func(r chi.Router) {
-		r.Post("/", authWrap(hs.CreateData))
-		r.Get("/", authWrap(hs.GetAllData))
+		r.Get("/{offset}", authWrap(hs.GetAllData))
 
-		r.Get("/{id}", authWrap(hs.GetDataByID))
-		r.Put("/{id}", authWrap(hs.UpdateData))
-		r.Delete("/{id}", authWrap(hs.DeleteData))
+		r.Route("/item", func(r chi.Router) {
+			r.Post("/", authWrap(hs.CreateData))
+			r.Get("/{id}", authWrap(hs.GetDataByID))
+			r.Put("/{id}", authWrap(hs.UpdateData))
+			r.Delete("/{id}", authWrap(hs.DeleteData))
+		})
 	})
 
 	r.Get("/ping", wrap(hs.Ping))

@@ -53,11 +53,11 @@ func (svc *DataService) Create(ctx context.Context, req models.CreateDataRequest
 }
 
 // GetAll retrieves all data item's titles for the user
-func (svc *DataService) GetAll(ctx context.Context) ([]models.DataItemResponse, error) {
+func (svc *DataService) GetAll(ctx context.Context, off int) ([]models.DataItemResponse, error) {
 	userContext := ctx.Value(middleware.UserContextKey).(*models.UserContext)
 	userID := userContext.UserID
 
-	items, err := svc.repo.GetAllByUserID(ctx, userID)
+	items, err := svc.repo.GetAllByUserID(ctx, userID, off)
 	if err != nil {
 		return nil, err
 	}

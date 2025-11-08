@@ -9,7 +9,7 @@ import (
 type DataRepositoryInterface interface {
 	Save(ctx context.Context, item *EncryptedDataItem) error
 	GetByID(ctx context.Context, id string, userID string) (*EncryptedDataItem, error)
-	GetAllByUserID(ctx context.Context, userID string) ([]*EncryptedDataItem, error)
+	GetAllByUserID(ctx context.Context, userID string, off int) ([]*EncryptedDataItem, error)
 	Update(ctx context.Context, item *EncryptedDataItem) error
 	Delete(ctx context.Context, id string, userID string) error
 	Ping(ctx context.Context) error
@@ -56,14 +56,16 @@ func (r *DataRepository) GetByID(ctx context.Context, id string, userID string) 
 }
 
 // GetAllByUserID retrieves all data items for a specific user
-func (r *DataRepository) GetAllByUserID(ctx context.Context, userID string) ([]*EncryptedDataItem, error) {
+func (r *DataRepository) GetAllByUserID(ctx context.Context, userID string, off int) ([]*EncryptedDataItem, error) {
 	var items []*EncryptedDataItem
 	err := r.db.SelectContext(ctx, &items, `
 		SELECT id, user_id, type, title, encrypted_data, iv, metadata, created_at, updated_at
 		FROM data 
 		WHERE user_id = $1
 		ORDER BY created_at DESC
-		`, userID)
+		LIMIT 10
+		OFFSET $2
+		`, userID, off*10)
 	if err != nil {
 		return nil, err
 	}

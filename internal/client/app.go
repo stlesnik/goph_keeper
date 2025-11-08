@@ -6,6 +6,7 @@ import (
 	"github.com/stlesnik/goph_keeper/internal/config"
 	"golang.org/x/term"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -124,7 +125,13 @@ func (a *App) handleProfile() {
 func (a *App) handleListData() {
 	fmt.Println("\n-----------Your Data Items-----------")
 
-	items, err := a.client.GetAllData()
+	offset, err := strconv.Atoi(a.getInput("Enter page number: "))
+	if err != nil {
+		fmt.Println("Error getting page number, setting to 0")
+		offset = 0
+	}
+
+	items, err := a.client.GetAllData(offset)
 	if err != nil {
 		fmt.Printf("Failed to get data: %v\n", err)
 		return

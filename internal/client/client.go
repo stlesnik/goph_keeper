@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/stlesnik/goph_keeper/internal/models"
@@ -166,8 +167,9 @@ func (c *Client) GetProfile() (*models.UserProfile, error) {
 }
 
 // GetAllData gets all user data items
-func (c *Client) GetAllData() ([]models.DataItemResponse, error) {
-	resp, err := c.makeRequest("GET", "/data", nil)
+func (c *Client) GetAllData(offset int) ([]models.DataItemResponse, error) {
+	strOffset := strconv.Itoa(offset)
+	resp, err := c.makeRequest("GET", "/data/"+strOffset, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +195,7 @@ func (c *Client) GetAllData() ([]models.DataItemResponse, error) {
 
 // GetDataByID gets specific data item
 func (c *Client) GetDataByID(id string) (*models.DataItemResponse, error) {
-	resp, err := c.makeRequest("GET", "/data/"+id, nil)
+	resp, err := c.makeRequest("GET", "/data/item/"+id, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +246,7 @@ func (c *Client) CreateData(dataType, title, data, metadata string) error {
 		Metadata:      metadata,
 	}
 
-	resp, err := c.makeRequest("POST", "/data", req)
+	resp, err := c.makeRequest("POST", "/data/item", req)
 	if err != nil {
 		return err
 	}
@@ -282,7 +284,7 @@ func (c *Client) UpdateData(id, dataType, title, data, metadata string) error {
 		Metadata:      metadata,
 	}
 
-	resp, err := c.makeRequest("PUT", "/data/"+id, req)
+	resp, err := c.makeRequest("PUT", "/data/item/"+id, req)
 	if err != nil {
 		return err
 	}
@@ -303,7 +305,7 @@ func (c *Client) UpdateData(id, dataType, title, data, metadata string) error {
 
 // DeleteData deletes data item
 func (c *Client) DeleteData(id string) error {
-	resp, err := c.makeRequest("DELETE", "/data/"+id, nil)
+	resp, err := c.makeRequest("DELETE", "/data/item/"+id, nil)
 	if err != nil {
 		return err
 	}

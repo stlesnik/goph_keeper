@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stlesnik/goph_keeper/internal/logger"
@@ -37,9 +38,14 @@ func (h *Handlers) CreateData(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// GetAllData handles retrieval of all user data items.
+// GetAllData handles retrieval of all user data items with pagination.
 func (h *Handlers) GetAllData(w http.ResponseWriter, r *http.Request) {
-	dataItems, err := h.service.Data.GetAll(r.Context())
+	offset, err := strconv.Atoi(chi.URLParam(r, "offset"))
+	if err != nil {
+		logger.Logger.Errorw("Error decoding offset", "error", err, "offset", offset)
+		offset = 0
+	}
+	dataItems, err := h.service.Data.GetAll(r.Context(), offset)
 	if err != nil {
 		logger.Logger.Errorw("Get data error",
 			"error", err.Error(),
