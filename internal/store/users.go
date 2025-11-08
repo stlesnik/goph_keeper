@@ -58,7 +58,11 @@ func (r *UsersRepository) Update(ctx context.Context, item *User) error {
 // GetByEmail returns user from db if it exists
 func (r *UsersRepository) GetByEmail(ctx context.Context, email string) (User, error) {
 	var user User
-	err := r.db.GetContext(ctx, &user, "SELECT * FROM users WHERE email = $1", email)
+	err := r.db.GetContext(ctx, &user, `
+		SELECT id, username, email, password_hash, salt, created_at, updated_at 
+		FROM users 
+		WHERE email = $1
+	`, email)
 	if err != nil {
 		return User{}, fmt.Errorf("error getting user by email %s: %w", email, err)
 	}
