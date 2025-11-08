@@ -24,8 +24,8 @@ func (m *MockDataRepository) GetByID(ctx context.Context, id string, userID stri
 	return args.Get(0).(*store.EncryptedDataItem), args.Error(1)
 }
 
-func (m *MockDataRepository) GetAllByUserID(ctx context.Context, userID string) ([]*store.EncryptedDataItem, error) {
-	args := m.Called(ctx, userID)
+func (m *MockDataRepository) GetAllByUserID(ctx context.Context, userID string, off int) ([]*store.EncryptedDataItem, error) {
+	args := m.Called(ctx, userID, off)
 	return args.Get(0).([]*store.EncryptedDataItem), args.Error(1)
 }
 
